@@ -21,8 +21,9 @@
 <style scoped>
   .nav-bar {
     display: flex;
-    position: fixed;
-    top: 0;
+    /*在使用浏览器的原生滚动时*/
+/*    position: fixed;
+    top: 0;*/
 
     height: 44px;
     width: 100%;

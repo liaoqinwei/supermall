@@ -1,8 +1,8 @@
 <template>
-  <li class="goods-item">
-    <a href="">
+  <li class="goods-item" @click="goodsItemClick">
+    <a href="javascript:;">
       <div class="goods-img-box">
-        <img :src="goodsItem.show.img" width="100%" height="100%">
+        <img :src="goodsItem.show.img" width="100%" height="100%" @load="imageLoad">
       </div>
       <p class="goods-item-title">{{goodsItem.title}}</p>
       <p class="goods-item-info">
@@ -22,6 +22,14 @@
         default() {
           return {}
         }
+      }
+    },
+    methods:{
+      imageLoad(){
+        this.$bus.$emit('itemImgDown')
+      },
+      goodsItemClick(){
+        this.$router.push('/detail/' +this.goodsItem.iid)
       }
     }
   }
