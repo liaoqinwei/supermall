@@ -20,6 +20,7 @@
 
 <style scoped>
   .nav-bar {
+    overflow: hidden;
     display: flex;
     /*在使用浏览器的原生滚动时*/
 /*    position: fixed;
@@ -36,6 +37,7 @@
   }
 
   .nav-right, .nav-left {
+    overflow: hidden;
     width: 60px;
     height: 100%;
   }

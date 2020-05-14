@@ -1,9 +1,8 @@
 const path = require('path')
 module.exports = {
-  // DEV
+  // BUILD DEV
   // publicPath:'/VUE/supermall/dist/',
-  // PRO
-  publicPath:'./',
+  // BUILD PRO
   configureWebpack: {
     resolve: {
       alias: {

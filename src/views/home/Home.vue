@@ -145,7 +145,6 @@
     },
     activated() {
       if (this.saveY) {
-        console.log(this.saveY);
         this.$refs.scrollContent.refresh()
         this.$refs.scrollContent.scrollTo(0, this.saveY, 0)
         this.$refs.scrollContent.refresh()

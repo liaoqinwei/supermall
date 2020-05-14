@@ -23,7 +23,7 @@
         curIndex: this.beginIndex + 1,// 当前正在播放的索引
         sliding: false,//为了解决在自动滑动时可以滑动的问题
         isStart: false,//为了解决滑动重叠
-        waitTimer:null
+        waitTimer: null
       }
     },
     props: {
@@ -52,9 +52,9 @@
         type: Boolean,
         default: false
       },//是否自动轮播
-      autoPlayWaitTime:{
-        type:Number,
-        default:3000
+      autoPlayWaitTime: {
+        type: Number,
+        default: 3000
       }
     },
     // 组件装载完成后，我们把需要操作的元素都获取到
@@ -68,7 +68,7 @@
         // 如果用户传入的是百分比
         let reg = /^\d+%$/
         if (reg.test(this.iWidth)) {
-          let wWidth = document.documentElement.querySelector('#container'+this.elId).offsetWidth
+          let wWidth = document.documentElement.querySelector('#container' + this.elId).offsetWidth
           return ((this.slides.length + 2) * (wWidth * parseFloat(this.iWidth) / 100)) + 'px'
         }
         return (this.slides.length * parseFloat(this.iWidth)) + 'px'
@@ -96,12 +96,15 @@
       },
       //为了让轮播图不间断播放 需要克隆最后一张在第一个，最后一个克隆到第一个
       cloneSlide() {
-        // 先拿到最后一个和第一个
-        let lastSlide = this.slides[this.slides.length - 1].cloneNode(true),
-            firstSlide = this.slides[0].cloneNode(true)
-        // 放入到slides中
-        this.wrapper.appendChild(firstSlide)
-        this.wrapper.insertBefore(lastSlide, this.slides[0]);
+        console.log(this.slides.length);
+        if (this.slides.length >= 1) {
+          // 先拿到最后一个和第一个
+          let lastSlide = this.slides[this.slides.length - 1].cloneNode(true),
+              firstSlide = this.slides[0].cloneNode(true)
+          // 放入到slides中
+          this.wrapper.appendChild(firstSlide)
+          this.wrapper.insertBefore(lastSlide, this.slides[0]);
+        }
       },
       // 像前移动的方法 (具体动画)
       forwardMove(duration) {
@@ -202,7 +205,7 @@
         // 滑动完成后继续自动轮播
         this.waitTimer = setTimeout(function () {
           _this.autoMove()
-        },this.autoPlayWaitTime)
+        }, this.autoPlayWaitTime)
       },
     }
   }
