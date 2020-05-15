@@ -1,14 +1,18 @@
 <template>
-  <div class="carousel-container" :style="computedContainerSize" :id="'container'+elId">
-    <div class="carousel-wrapper" :style="{width:computedWrapperWidth,left:'-'+computedSlideWidth}"
+  <div class="carousel-container" :style="computedContainerSize" :id="'container'+elId" ref="carouselContainer">
+    <div class="carousel-wrapper" ref="wrapper" :style="{width:computedWrapperWidth,left:'-'+computedSlideWidth}"
          @touchmove="wrapperTouchMove" @touchstart="wrapperTouchStart" @touchend="wrapperTouchEnd">
       <slot></slot>
     </div>
+    <ul class="focus-list" v-if="focus" ref="focusBox">
+      <!--动态绑定：后期动态绑定-->
+      <li class="focus-item" v-for="(item,index) in slides" :class="{active:checkActiveFocus(index)}"></li>
+    </ul>
   </div>
 </template>
 
 <script>
-  import {animate, effect} from "./animate";
+  import {animate} from "./animate";
   import utils from "./utils.js"
 
   export default {
@@ -23,7 +27,8 @@
         curIndex: this.beginIndex + 1,// 当前正在播放的索引
         sliding: false,//为了解决在自动滑动时可以滑动的问题
         isStart: false,//为了解决滑动重叠
-        waitTimer: null
+        waitTimer: null,
+        focusList: null
       }
     },
     props: {
@@ -55,9 +60,13 @@
       autoPlayWaitTime: {
         type: Number,
         default: 3000
-      }
+      },//当手指滑动到下一次再自动轮播 需要等待的时间
+      focus: {
+        type: Boolean,
+        default: true
+      }// 是否需要焦点
     },
-    // 组件装载完成后，我们把需要操作的元素都获取到
+    // 组件装载完成后，执行初始化函数
     mounted() {
       this.carouselInit()
     },
@@ -78,16 +87,27 @@
         if (!this.slides) return;
         return (parseFloat(this.computedWrapperWidth) / (this.slides.length + 2)) + 'px'
       },
+      // 检测哪个focus是动态的
+      checkActiveFocus() {
+        return (index) => {
+          let curIndex = this.curIndex - 1
+          return index === curIndex
+        }
+      }
     },
     methods: {
+      // 初始化
       carouselInit() {
-        let container = document.querySelector('#' + 'container' + this.elId)
-        this.wrapper = container.querySelector('.carousel-wrapper')
+        let container = this.$refs.carouselContainer
+        this.wrapper = this.$refs.wrapper
         this.slides = this.wrapper.querySelectorAll('.carousel-slide')
+        this.focusBox = this.$refs.focusBox
+
         this.setSlideWidth()
         this.cloneSlide()
         this.autoPlay ? this.autoMove() : null
       },
+      // 设置slide宽度
       setSlideWidth() {
         if (!this.slides) return
         for (let slide of this.slides) {
@@ -96,7 +116,6 @@
       },
       //为了让轮播图不间断播放 需要克隆最后一张在第一个，最后一个克隆到第一个
       cloneSlide() {
-        console.log(this.slides.length);
         if (this.slides.length >= 1) {
           // 先拿到最后一个和第一个
           let lastSlide = this.slides[this.slides.length - 1].cloneNode(true),
@@ -150,6 +169,7 @@
         if (ev.changedTouches >= 2) return false
         return true
       },
+      // 操作手指的方法
       wrapperTouchStart(ev) {
         // 判断能否正常滑动
         ev.stopPropagation()
@@ -213,6 +233,7 @@
 
 <style scoped>
   .carousel-container {
+    position: relative;
     overflow: hidden;
   }
 
@@ -220,5 +241,28 @@
     position: relative;
     overflow: hidden;
     height: auto;
+  }
+
+  .focus-list {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+
+  }
+
+  .focus-item {
+    opacity: .9;
+    flex: 1;
+    margin: 0 3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .focus-item.active {
+    background: lightcoral;
   }
 </style>
