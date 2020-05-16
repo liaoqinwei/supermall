@@ -23,3 +23,32 @@ export class GoodsInfo {
     this.discountBgColor = itemInfo.discountBgColor
   }
 }
+
+export class Shop {
+  constructor(shopInfo) {
+    this.logo = shopInfo.shopLogo
+    this.name = shopInfo.name
+    this.fans = shopInfo.cFans
+    this.sells = shopInfo.cSells
+    this.score = shopInfo.score
+    this.goodsCount = shopInfo.cGoods
+  }
+}
+
+export class GoodsPram {
+  constructor(info, rule) {
+    this.image = info.images ? info.images[0] : ''
+    this.infos = info.set
+    this.sizes = rule.tables
+  }
+}
+
+export class CommentInfo {
+  constructor(rate){
+    this.uname = rate.list[0].user.uname
+    this.uhead = rate.list[0].user.avatar
+    this.style = rate.list[0].style
+    this.conent = rate.list[0].content
+    this.date = rate.list[0].created*1000
+  }
+}

@@ -25,6 +25,6 @@
     align-items: center;
     flex-direction: row;
     background-color: #eee;
-    z-index: 1000;
+    z-index: 10;
   }
 </style>

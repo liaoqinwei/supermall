@@ -12,6 +12,9 @@ module.exports = {
         'common': '@/common',
         'views': '@/views'
       },
+    },
+    devServer:{
+      port:8081
     }
   }
 }

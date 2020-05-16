@@ -8,12 +8,20 @@
 
 <script>
   import BScroll from "better-scroll"
+  import {throttle} from "common/utils";
 
   export default {
     name: "Scroll",
     data() {
       return {
-        scroll: null
+        scroll: null,
+      }
+    },
+    computed: {
+      throttleF(position) {
+        return throttle((position) => {
+          this.$emit('contentScroll', position)
+        }, 200)
       }
     },
     props: {
@@ -35,8 +43,12 @@
       })
       // 2.实时监听滚动
       if (this.probeType === 2 || this.probeType === 3) {
-        this.scroll.on('scroll', (position) => {
+        /*this.scroll.on('scroll', (position) => {
           this.$emit('contentScroll', position)
+        })*/
+        // 通过节流，增加性能
+        this.scroll.on('scroll', (position) => {
+          this.throttleF(position)
         })
       }
       // 3.上拉加载更多

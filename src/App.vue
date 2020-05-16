@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <main-tab-bar></main-tab-bar>
+    <!--底下的导航 如果是详情页则不显示-->
+    <main-tab-bar v-if="isDetail"></main-tab-bar>
     <keep-alive exclude="Detail">
       <router-view></router-view>
     </keep-alive>
@@ -14,6 +15,12 @@
     name: 'App',
     components: {
       MainTabBar,
+    },
+    computed: {
+      isDetail() {
+        let path = this.$route.path
+        return path.indexOf('detail') == -1
+      }
     }
   }
 </script>
@@ -24,6 +31,7 @@
   #app {
     max-width: 640px;
     width: 100%;
+    height: 100%;
     margin: auto;
   }
 </style>
