@@ -42,6 +42,8 @@
   .detail-desc-box {
     margin: 20px 0;
     padding: 0 .3rem;
+    border-bottom: 4px solid #eee;
+    overflow: hidden;
   }
 
   /*尺寸表格*/

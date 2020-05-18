@@ -14,7 +14,7 @@
       v-show="isTabFixed"></tab-control>
 
     <scroll class="scroll-content"
-            ref="scrollContent"
+            ref="scroll"
             :probe-type="3"
             @contentScroll="contentScroll"
             :pull-up-load="true"
@@ -48,6 +48,8 @@
 
   import {getHomeMultiData, getHomeGoods} from "network/home";
   import {debounce} from "common/utils";
+  import {itemListenerMixin} from "common/mixin";
+
 
   export default {
     name: "Home",
@@ -62,6 +64,7 @@
       Scroll,
       BackTop
     },
+    mixins: [itemListenerMixin],
     data() {
       return {
         banners: null,
@@ -74,7 +77,7 @@
         currType: 'pop',
         isShowBack: false,
         tabOffsetTop: 0,
-        isTabFixed: false
+        isTabFixed: false,
       }
     },
     created() {
@@ -86,11 +89,6 @@
       this.getHomeGoods('sell')
     },
     mounted() {
-      // 1.图片加载完成的事件监听
-      const refresh = debounce(this.$refs.scrollContent.refresh, 100)
-      this.$bus.$on('itemImgDown', () => {
-        refresh()
-      });
     },
     methods: {
       /*
@@ -104,7 +102,7 @@
         this.$refs.tabControl2.currIndex = index
       },
       backClick() {
-        this.$refs.scrollContent.scrollTo(0, 0)
+        this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
         // 1.判断backTop是否显示
@@ -117,7 +115,7 @@
       loadMore() {
         this.getHomeGoods(this.currType)
         setTimeout(() => {
-          this.$refs.scrollContent.finishPullUp()
+          this.$refs.scroll.finishPullUp()
         }, 2000)
       },
       swiperImageLoad() {
@@ -145,14 +143,17 @@
     },
     activated() {
       if (this.saveY) {
-        this.$refs.scrollContent.refresh()
-        this.$refs.scrollContent.scrollTo(0, this.saveY, 0)
-        this.$refs.scrollContent.refresh()
+        this.$refs.scroll.refresh()
+        this.$refs.scroll.scrollTo(0, this.saveY, 0)
+        this.$refs.scroll.refresh()
       }
     },
     deactivated() {
       // 1.离开的时候记录一下滚动的值
-      this.saveY = this.$refs.scrollContent.getScrollY()
+      this.saveY = this.$refs.scroll.getScrollY()
+
+      // 2.取消全局事件
+      this.$bus.$off('itemImgDown', this.refresh)
     }
   }
 </script>

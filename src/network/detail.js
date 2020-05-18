@@ -9,6 +9,12 @@ export function getDetail(iid) {
   })
 }
 
+export function getRecommend() {
+  return request({
+    url:'recommend'
+  })
+}
+
 
 export class GoodsInfo {
   constructor(itemInfo, columns, services) {
@@ -48,7 +54,8 @@ export class CommentInfo {
     this.uname = rate.list[0].user.uname
     this.uhead = rate.list[0].user.avatar
     this.style = rate.list[0].style
-    this.conent = rate.list[0].content
+    this.content = rate.list[0].content
     this.date = rate.list[0].created*1000
+    this.images = rate.list[0].images && rate.list[0].images
   }
 }

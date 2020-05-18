@@ -2,7 +2,7 @@
   <li class="goods-item" @click="goodsItemClick">
     <a href="javascript:;">
       <div class="goods-img-box">
-        <img :src="goodsItem.show.img" width="100%" height="100%" @load="imageLoad">
+        <img :src="showImage" width="100%" height="100%" @load="imageLoad">
       </div>
       <p class="goods-item-title">{{goodsItem.title}}</p>
       <p class="goods-item-info">
@@ -24,12 +24,17 @@
         }
       }
     },
-    methods:{
-      imageLoad(){
+    computed: {
+      showImage() {
+        return this.goodsItem.image || this.goodsItem.show.img
+      }
+    },
+    methods: {
+      imageLoad() {
         this.$bus.$emit('itemImgDown')
       },
-      goodsItemClick(){
-        this.$router.push('/detail/' +this.goodsItem.iid)
+      goodsItemClick() {
+        this.$router.push('/detail/' + this.goodsItem.iid)
       }
     }
   }
