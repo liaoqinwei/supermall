@@ -44,11 +44,9 @@
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import Scroll from "components/common/scroll/Scroll"
-  import BackTop from "components/content/backTop/BackTop";
 
   import {getHomeMultiData, getHomeGoods} from "network/home";
-  import {debounce} from "common/utils";
-  import {itemListenerMixin} from "common/mixin";
+  import {itemListenerMixin,backTopMixin} from "common/mixin";
 
 
   export default {
@@ -62,9 +60,8 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin,backTopMixin],
     data() {
       return {
         banners: null,
@@ -75,7 +72,6 @@
           'sell': {page: 0, list: []}
         },
         currType: 'pop',
-        isShowBack: false,
         tabOffsetTop: 0,
         isTabFixed: false,
       }
@@ -88,8 +84,6 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
-    mounted() {
-    },
     methods: {
       /*
       * 事件监听相关的方法
@@ -100,9 +94,6 @@
 
         this.$refs.tabControl1.currIndex = index
         this.$refs.tabControl2.currIndex = index
-      },
-      backClick() {
-        this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
         // 1.判断backTop是否显示
@@ -143,6 +134,7 @@
     },
     activated() {
       if (this.saveY) {
+        // 1.返回上次的savaY
         this.$refs.scroll.refresh()
         this.$refs.scroll.scrollTo(0, this.saveY, 0)
         this.$refs.scroll.refresh()

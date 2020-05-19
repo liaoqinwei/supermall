@@ -1,7 +1,10 @@
 <template>
   <div id="detail">
     <!--导航-->
-    <detail-nav-bar :titles="['商品', '参数', '评论', '推荐']" class="detail-nav-bar"></detail-nav-bar>
+    <detail-nav-bar
+      :titles="['商品', '参数', '评论', '推荐']" class="detail-nav-bar"
+      @titleClick="titleClick"
+      ref="nav"></detail-nav-bar>
 
     <scroll class="content"
             ref="scroll"
@@ -17,13 +20,14 @@
       <!--商品详细信息（图片）-->
       <detail-goods-info :detailInfo="detailInfo" @detailImgLoad="detailImgLoad"/>
       <!--商品的尺码参数-->
-      <detail-desc-info :itemParams="itemParams"/>
+      <detail-desc-info :itemParams="itemParams" ref="params"/>
       <!--评论信息-->
-      <detail-comment-info :commentInfo="commentInfo"/>
+      <detail-comment-info :commentInfo="commentInfo" ref="comment"/>
       <!--商品推荐信息展示-->
-      <goods-list :goods="recommendInfo"/>
+      <goods-list :goods="recommendInfo" ref="recommend"/>
     </scroll>
 
+    <detail-bottom-bar/>
     <back-top @click.native="backClick" v-show="isShowBack"/>
   </div>
 </template>
@@ -36,13 +40,13 @@
   import DetailGoodsInfo from "./childComponent/DetailGoodsInfo";
   import DetailDescInfo from "./childComponent/DetailDescInfo";
   import DetailCommentInfo from "./childComponent/DetailCommentInfo";
+  import DetailBottomBar from "./childComponent/DetailBottomBar";
 
   import {getDetail, getRecommend, GoodsInfo, Shop, GoodsPram, CommentInfo} from "network/detail";
   import {debounce} from "common/utils";
-  import {itemListenerMixin} from "common/mixin";
+  import {itemListenerMixin,backTopMixin} from "common/mixin";
 
   import Scroll from "components/common/scroll/Scroll";
-  import BackTop from "components/content/backTop/BackTop";
   import GoodsList from "components/content/goods/GoodsList";
   import GoodsListItem from "components/content/goods/GoodsListItem";
 
@@ -56,13 +60,13 @@
       DetailBaseInfo,
       DetailGoodsInfo,
       DetailCommentInfo,
+      DetailBottomBar,
       GoodsList,
       GoodsListItem,
 
       Scroll,
-      BackTop
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin,backTopMixin],
     data() {
       return {
         iid: null,
@@ -70,11 +74,11 @@
         goods: {},
         shop: {},
         detailInfo: {},
-        refresh: null,
         itemParams: {},
-        isShowBack: false,
         commentInfo: {},
         recommendInfo: [],
+        themeTopYs: [],
+        themeTopYsFn: null
       }
     },
     created() {
@@ -103,28 +107,65 @@
         if (data.rate.cRate != 0) {
           this.commentInfo = new CommentInfo(data.rate)
         }
+
+        // 7.当页面渲染完成保存themeTopYs数据(方法不可行)
+        /*this.$nextTick(() => {
+          this.themeTopYs = []
+
+          this.themeTopYs.push(0)
+          this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+          this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+          this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+          console.dir(this.$refs.recommend);
+          console.log(this.$refs.recommend.$el);
+          console.log(this.themeTopYs);
+        })*/
       })
 
       // 3.请求推荐数据
       getRecommend().then(res => {
         this.recommendInfo = res.data.list
       })
-    },
-    mounted() {
+
+      // 给themeTopYs绑定防抖
+      this.themeTopYsFn = debounce(() => {
+        // 保存四个组件的offsetTop值
+        this.themeTopYs = []
+        this.themeTopYs.push(0)
+        this.themeTopYs.push(-this.$refs.params.$el.offsetTop)
+        this.themeTopYs.push(-this.$refs.comment.$el.offsetTop)
+        this.themeTopYs.push(-this.$refs.recommend.$el.offsetTop)
+      }, 100)
     },
     methods: {
       /*监听事件*/
       detailImgLoad() {
-        // 详情页图片加载完成
+        // 详情页图片加载完成(这个是通过混入绑定的)
         this.refresh()
-      },
-      backClick() {
-        this.$refs.scroll.scrollTo(0, 0)
+        // 计算top值
+        this.themeTopYsFn()
       },
       observedScroll(position) {
         let scrollY = position.y
+        // 控制显示back按钮
         this.isShowBack = scrollY < -1000
+        // 控制nav-bar的显示
+        let len = this.themeTopYs.length
+        for (let index of this.themeTopYs.keys()) {
+          // 如果scrollY已经大于了最后一个值 就直接赋值给currindex 然后break
+          if (scrollY < this.themeTopYs[len - 1]) {
+            this.$refs.nav.currIndex = len - 1
+            break
+          } else if (scrollY < this.themeTopYs[index] && scrollY > this.themeTopYs[index + 1]) {
+            // 判断scrollY的位置属于哪个阶级
+            this.$refs.nav.currIndex = index
+            break
+          }
+        }
       },
+      titleClick(index) {
+        this.$refs.scroll.scrollTo(0, this.themeTopYs[index], 200)
+      }
     },
     destroyed() {
       this.$bus.$off('itemImgDown', this.refresh)
@@ -145,7 +186,7 @@
     top: 44px;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 55px;
     overflow: hidden;
   }
 

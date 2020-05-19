@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-comment-box">
+  <div class="detail-comment-box" v-if="Object.keys(commentInfo).length > 0">
     <!--描述-->
     <div class="box-desc">
       <span>用户评论</span>
@@ -125,17 +125,19 @@
   }
 
   /*评论图*/
-  .img-box{
+  .img-box {
     margin-top: 5px;
   }
-  .img-box>li{
+
+  .img-box > li {
     width: 60px;
     height: 60px;
     overflow: hidden;
     float: left;
     text-align: center;
   }
-  .img-box>li>img{
+
+  .img-box > li > img {
     width: 100%;
   }
 </style>

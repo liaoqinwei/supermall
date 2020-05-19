@@ -18,10 +18,11 @@
       }
     },
     computed: {
+      // 节流封装发送事件
       throttleF(position) {
         return throttle((position) => {
           this.$emit('contentScroll', position)
-        }, 200)
+        }, 50)
       }
     },
     props: {
