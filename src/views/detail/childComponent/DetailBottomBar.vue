@@ -17,7 +17,7 @@
     </div>
     <!--右边的按钮-->
     <div class="bar-right">
-      <button>加入购物车</button>
+      <button @click="addToCart">加入购物车</button>
       <button>购买</button>
     </div>
   </div>
@@ -25,7 +25,12 @@
 
 <script>
   export default {
-    name: "DetailBottomBar"
+    name: "DetailBottomBar",
+    methods:{
+      addToCart(){
+        this.$emit('addCart');
+      }
+    }
   }
 </script>
 
@@ -71,6 +76,9 @@
     border-radius: 15px;
     color: #fff;
     font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   .bar-right > button:nth-of-type(1){
     background: linear-gradient(135deg,#f2140c,#f2270c 70%,#f24d0c);

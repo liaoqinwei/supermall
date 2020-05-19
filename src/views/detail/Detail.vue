@@ -27,7 +27,7 @@
       <goods-list :goods="recommendInfo" ref="recommend"/>
     </scroll>
 
-    <detail-bottom-bar/>
+    <detail-bottom-bar @addCart="addCart"/>
     <back-top @click.native="backClick" v-show="isShowBack"/>
   </div>
 </template>
@@ -44,7 +44,7 @@
 
   import {getDetail, getRecommend, GoodsInfo, Shop, GoodsPram, CommentInfo} from "network/detail";
   import {debounce} from "common/utils";
-  import {itemListenerMixin,backTopMixin} from "common/mixin";
+  import {itemListenerMixin, backTopMixin} from "common/mixin";
 
   import Scroll from "components/common/scroll/Scroll";
   import GoodsList from "components/content/goods/GoodsList";
@@ -66,7 +66,7 @@
 
       Scroll,
     },
-    mixins: [itemListenerMixin,backTopMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     data() {
       return {
         iid: null,
@@ -78,7 +78,8 @@
         commentInfo: {},
         recommendInfo: [],
         themeTopYs: [],
-        themeTopYsFn: null
+        themeTopYsFn: null,
+        productCount: 1
       }
     },
     created() {
@@ -153,10 +154,10 @@
         let len = this.themeTopYs.length
         for (let index of this.themeTopYs.keys()) {
           // 如果scrollY已经大于了最后一个值 就直接赋值给currindex 然后break
-          if (scrollY < this.themeTopYs[len - 1]) {
+          if (scrollY <= this.themeTopYs[len - 1]) {
             this.$refs.nav.currIndex = len - 1
             break
-          } else if (scrollY < this.themeTopYs[index] && scrollY > this.themeTopYs[index + 1]) {
+          } else if (scrollY <= this.themeTopYs[index] && scrollY > this.themeTopYs[index + 1]) {
             // 判断scrollY的位置属于哪个阶级
             this.$refs.nav.currIndex = index
             break
@@ -165,6 +166,19 @@
       },
       titleClick(index) {
         this.$refs.scroll.scrollTo(0, this.themeTopYs[index], 200)
+      },
+      addCart() {
+        // 1.获取购物车需要展示的信息
+        const product = {}
+        product.image = this.topImages[0]
+        product.title = this.goods.title
+        product.desc = this.goods.desc
+        product.price = this.goods.newPrice
+        product.iid = this.iid
+        product.realPrice = this.goods.realPrice
+        product.count = this.productCount
+        // 2.将商品添加到购物车
+        this.$store.dispatch('addCart', product)
       }
     },
     destroyed() {

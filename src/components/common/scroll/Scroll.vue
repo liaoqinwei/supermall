@@ -19,11 +19,11 @@
     },
     computed: {
       // 节流封装发送事件
-      throttleF(position) {
+      /*throttleF(position) {
         return throttle((position) => {
           this.$emit('contentScroll', position)
         }, 50)
-      }
+      }*/
     },
     props: {
       probeType: {
@@ -44,13 +44,13 @@
       })
       // 2.实时监听滚动
       if (this.probeType === 2 || this.probeType === 3) {
-        /*this.scroll.on('scroll', (position) => {
-          this.$emit('contentScroll', position)
-        })*/
-        // 通过节流，增加性能
         this.scroll.on('scroll', (position) => {
-          this.throttleF(position)
+          this.$emit('contentScroll', position)
         })
+        // 通过节流，增加性能
+        /*this.scroll.on('scroll', (position) => {
+          this.throttleF(position)
+        })*/
       }
       // 3.上拉加载更多
       if (this.pullUpLoad) {
