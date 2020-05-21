@@ -2,7 +2,7 @@
   <li class="goods-item" @click="goodsItemClick">
     <a href="javascript:;">
       <div class="goods-img-box">
-        <img :src="showImage" width="100%" height="100%" @load="imageLoad">
+        <img v-lazy="showImage" width="100%" height="100%" @load="imageLoad">
       </div>
       <p class="goods-item-title">{{goodsItem.title}}</p>
       <p class="goods-item-info">

@@ -29,6 +29,7 @@
 
     <detail-bottom-bar @addCart="addCart"/>
     <back-top @click.native="backClick" v-show="isShowBack"/>
+<!--    <toast :message="message" :show="show"/>-->
   </div>
 </template>
 
@@ -49,6 +50,7 @@
   import Scroll from "components/common/scroll/Scroll";
   import GoodsList from "components/content/goods/GoodsList";
   import GoodsListItem from "components/content/goods/GoodsListItem";
+  // import Toast from "components/common/toast/Toast";
 
   export default {
     name: "Detail",
@@ -65,6 +67,7 @@
       GoodsListItem,
 
       Scroll,
+      // Toast
     },
     mixins: [itemListenerMixin, backTopMixin],
     data() {
@@ -79,7 +82,9 @@
         recommendInfo: [],
         themeTopYs: [],
         themeTopYsFn: null,
-        productCount: 1
+        productCount: 1,
+        // message: '',
+        // show: false
       }
     },
     created() {
@@ -177,8 +182,23 @@
         product.iid = this.iid
         product.realPrice = this.goods.realPrice
         product.count = this.productCount
+        product.shopName = this.shop.name
+        product.isCheck = false
+
         // 2.将商品添加到购物车
-        this.$store.dispatch('addCart', product)
+        let pro = this.$store.dispatch('addCart', product)
+        // 3.添加购物车弹窗toast
+        pro.then(res => {
+          /*this.show = true
+          this.message = res
+
+          setTimeout(() => {
+            this.show = false
+            this.message = ''
+          },2000)*/
+
+          this.$toast.show(res,1500)
+        })
       }
     },
     destroyed() {

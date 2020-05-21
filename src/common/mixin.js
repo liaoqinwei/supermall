@@ -9,7 +9,7 @@ export const itemListenerMixin = {
   },
   mounted() {
     // 赋值防抖
-    this.refresh = debounce(this.$refs.scroll.refresh, 200)
+    this.refresh = debounce(this.$refs.scroll.refresh, 150)
 
     //全局事件监听商品列表图片加载事件
     this.$bus.$on('itemImgDown', this.refresh)

@@ -143,7 +143,7 @@
     deactivated() {
       // 1.离开的时候记录一下滚动的值
       this.saveY = this.$refs.scroll.getScrollY()
-
+      console.log(this.refresh)
       // 2.取消全局事件
       this.$bus.$off('itemImgDown', this.refresh)
     }

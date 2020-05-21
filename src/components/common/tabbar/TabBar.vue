@@ -20,11 +20,11 @@
     height: 49px;
     max-width: 640px;
     box-sizing: border-box;
-    box-shadow: 0 0px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -5px 15px rgba(0, 0, 0,.1);
     display: flex;
     align-items: center;
     flex-direction: row;
-    background-color: #eee;
+    background-color: rgb(250,250,250);
     z-index: 10;
   }
 </style>

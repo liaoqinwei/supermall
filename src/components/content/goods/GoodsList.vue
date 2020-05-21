@@ -6,15 +6,16 @@
 
 <script>
   import GoodsListItem from "./GoodsListItem";
+
   export default {
     name: "GoodsList",
-    components:{
+    components: {
       GoodsListItem
     },
-    props:{
-      goods:{
-        type:Array,
-        default(){
+    props: {
+      goods: {
+        type: Array,
+        default() {
           return []
         }
       }
@@ -23,9 +24,9 @@
 </script>
 
 <style scoped>
-.goods-list{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+  .goods-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 </style>
