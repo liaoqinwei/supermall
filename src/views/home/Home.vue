@@ -105,6 +105,7 @@
       },
       loadMore() {
         this.getHomeGoods(this.currType)
+        // 防止多次请求
         setTimeout(() => {
           this.$refs.scroll.finishPullUp()
         }, 2000)
@@ -143,7 +144,6 @@
     deactivated() {
       // 1.离开的时候记录一下滚动的值
       this.saveY = this.$refs.scroll.getScrollY()
-      console.log(this.refresh)
       // 2.取消全局事件
       this.$bus.$off('itemImgDown', this.refresh)
     }
